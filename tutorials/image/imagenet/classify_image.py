@@ -162,11 +162,14 @@ def run_inference_on_image(image):
         node_lookup = NodeLookup()
 
         top_k = predictions.argsort()[-FLAGS.num_top_predictions:][::-1]
-        pred = {}
+        pred = []
         for node_id in top_k.tolist():
+            props = {}
             human_string = node_lookup.id_to_string(node_id)
             score = predictions[node_id].astype(float)
-            pred[human_string] = score.astype(float)
+            props['class'] = human_string
+            props['score'] = score
+            pred.append(props)
         print(json.dumps(pred))
 
 def maybe_download_and_extract():
